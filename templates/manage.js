@@ -19,11 +19,6 @@ else
     open = false;
 }
 });
-function change(val)
-{
-$('#deluser').val(val); 
-$('#title').html('Delete ' + val);
-}
 function changeEdit(id)
 {
     var quota = jQuery('#edit'+id).val();
