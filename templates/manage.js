@@ -146,15 +146,15 @@ jQuery('#refresh').click(function(){
             	}
                 var delButton = "<button type='button' class='btn btn-danger' onclick='deleteFtp("+id+")' id='del"+id+"' value="+value.serverlogin+"><span class='glyphicon glyphicon-trash' style='color:white'></span></button>";
                 var editButton = "<button type='button'  class='btn btn-warning' onclick='changeEdit("+id+")' id='edit"+id+"' value="+value.q+" data-user="+value.serverlogin+" data-toggle='modal' data-target='#editModal'><span class='glyphicon glyphicon-pencil' style='color:white'></span></button>";
-                jQuery('.loader').hide();
-                jQuery('#refresh').show();
-                jQuery('#ca_table').show();
                 jQuery('tbody').append('<tr><td>'+id+'<td>'+value.serverlogin+'</td><td>'+value.dir+'</td><td>'+value.diskquota+'</td><td>'+delButton+''+editButton+'</td></tr>');
                 id = id + 1;
                 setTimeout(function(){
                     jQuery('#successdiv').hide();
                 },2000);
-                        }});         
+                        }});
+                jQuery('#refresh').show();
+                jQuery('#ca_table').show();
+                jQuery('.loader').hide();         
                     }});
 });
    
