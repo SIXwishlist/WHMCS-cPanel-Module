@@ -10,7 +10,7 @@ function autoloader($path)
         include 'Models' . DS . $class . '.php';
         return;
     }
-
+    
     include 'class.' . $class . '.php';
 }
 

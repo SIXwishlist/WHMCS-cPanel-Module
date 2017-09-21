@@ -5,6 +5,10 @@ require_once 'class.Autoloader.php';
 
 class CPanelAcc extends CPanelConnection implements CPanelInterface{
     
+    protected $data;
+    protected $function;
+
+
     public function __construct($params)
     {
         parent::__construct($params);
@@ -12,12 +16,17 @@ class CPanelAcc extends CPanelConnection implements CPanelInterface{
 
     public function create($user,$domain)
     { 
-        $data = array(
+        $this->data = array(
                 'user' => $user, 
                 'domain' => $domain
             );
-        $restURL = $this->buildUrl('createacct',$data);
-        $this->setUrl($restURL)->execute(); 
+        $this->function = 'createacct';
+        $url = $this->requestWHM1();
+        die(var_dump($url));
+        
+        //$restURL = $this->buildUrl('createacct',$data);
+        
+        //$this->setUrl($restURL)->execute(); 
     }
     public function suspend($user)
     {

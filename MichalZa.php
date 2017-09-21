@@ -6,13 +6,16 @@ require_once dirname(__FILE__) . DS . 'classes' . DS . 'class.Autoloader.php';
 use WHMCS\Database\Capsule as DB;
 
 
-if (!defined("WHMCS")) {
+if (!defined("WHMCS")) 
+{
     die("This file cannot be accessed directly");
 }
 
 function MichalZa_MetaData()
 {
-    return array('DisplayName' => 'MichalZa');
+    return array(
+        'DisplayName' => 'MichalZa'
+        );
 }  
 
 function MichalZa_ConfigOptions()
@@ -29,7 +32,8 @@ if(!$params['domain'])
 
 try
 { 
-    $cpanel = new CPanel($params);
+    $cpanel = new CPanel(new CPanelAcc($params));
+    //$cpanel->create($params['username'],$params['domain']);
     $cpanel->create($params['username'],$params['domain']);
 }
 catch(Exception $e)
@@ -44,7 +48,7 @@ function MichalZa_SuspendAccount(array $params)
 {  
     try
     {  
-        $cpanel = new CPanel($params);
+        $cpanel = new CPanel(new CPanelAcc($params));
         $cpanel->suspend($params['username']);
     }
     catch(Exception $e)
@@ -59,7 +63,7 @@ function MichalZa_UnsuspendAccount(array $params)
 {
     try
     {	
-        $cpanel = new CPanel($params);
+        $cpanel = new CPanel(new CPanelAcc($params));
         $cpanel->unsuspend($params['username']);
     }
     catch(Exception $e)
@@ -73,7 +77,7 @@ function MichalZa_TerminateAccount(array $params)
 {
     try
     {
-        $cpanel = new CPanel($params);
+        $cpanel = new CPanel(new CPanelAcc($params));
         $cpanel->terminate($params['username']); 
     }
     catch(Exception $e)
@@ -87,7 +91,7 @@ function MichalZa_ChangePassword(array $params)
 {
     try 
     {
-        $cpanel = new CPanel($params);
+        $cpanel = new CPanel(new CPanelAcc($params));
         $cpanel->changePassword($params['username'],$params['password']); 
     }
     catch (Exception $e)
@@ -101,14 +105,18 @@ function MichalZa_TestConnection(array $params)
 {
     try
     {	
-        $cpanel = new CPanel($params);
+        $cpanel = new CPanel(new CPanelAcc($params));
         $cpanel->testConnection(); 
     }
     catch(Exception $e)
     {
-		return array('error' => $e->getMessage());
+		return array(
+                    'error' => $e->getMessage()
+                        );
     }
-		return array('success' => true);  
+		return array(
+                    'success' => true
+                        );  
 }
 
 function MichalZa_AdminServicesTabFields($params) 
@@ -183,13 +191,15 @@ function MichalZa_ClientArea($params)
     {
         try
 	{
-			$cpanel = new CPanel($params);
-			$cpanel->deleteFTP($params,$_GET['user']);
+            $cpanel = new CPanel(new CPanelAcc($params));
+            $cpanel->deleteFTP($params,$_GET['user']);
             return 'success';
         }
         catch (Exception $e) 
         {
-            echo json_encode(array('error' => $e->getMessage()));
+            echo json_encode(array(
+                'error' => $e->getMessage()
+                    ));
             die();
         }
 
@@ -198,14 +208,18 @@ function MichalZa_ClientArea($params)
     {
 	try
 	{
-            $cpanel = new CPanel($params);
+            $cpanel = new CPanel(new CPanelAcc($params));
             $cpanel->createFTP($params,$_POST['user'],$_POST['pass'],$_POST['quota']);
-            echo json_encode(array('msg' => 'success'));
+            echo json_encode(array(
+                'msg' => 'success'
+                ));
             die();
         }
 	catch (Exception $e)
         {
-            echo json_encode(array('error' => $e->getMessage()));
+            echo json_encode(array(
+                'error' => $e->getMessage()
+                    ));
             die();
 	}
     }
@@ -213,15 +227,18 @@ function MichalZa_ClientArea($params)
     {
         try
         {
-            $a = new \Test\Api($params);
-            $a->loadFtpInstance($params);
-            $a->ftp->changeQuota($_GET['user'] , $_GET['quota']);
-            echo json_encode(array('msg' => 'success'));
+            $cpanel = new CPanel(new CPanelAcc($params));
+            $cpanel->ftp->changeQuotaFTP($params,$_GET['user'] , $_GET['quota']);
+            echo json_encode(array(
+                'msg' => 'success')
+                    );
             die();
         }
         catch (Exception $e)
         {
-           	echo json_encode(array('error' => $e->getMessage()));
+           	echo json_encode(array(
+                    'error' => $e->getMessage()
+                        ));
             die();
         }
     }
@@ -230,7 +247,7 @@ function MichalZa_ClientArea($params)
     {
         try
         {
-            $cpanel = new CPanel($params);
+            $cpanel = new CPanel(new CPanelAcc($params));
             $result = $cpanel->listAccountsFTP($params);
             $data = $result->cpanelresult->data;
             echo json_encode($data);
@@ -238,7 +255,9 @@ function MichalZa_ClientArea($params)
         }
         catch (Exception $e)
         {
-            echo json_encode(array('error' => $e->getMessage()));
+            echo json_encode(array(
+                'error' => $e->getMessage()
+                    ));
             die();
         }
     }
@@ -247,9 +266,11 @@ function MichalZa_ClientArea($params)
 function MichalZa_ftp($params)
 {  
     
-    return array(   'templatefile' => 'Templates/ManageFtp',
-                    'vars' => array(
+    return array(
+            'templatefile' => 'Templates/ManageFtp',
+            'vars' => array(
                     'serviceid' => $params['serviceid'],
-                    'cusername' => $params['username']));
+                    'cusername' => $params['username']
+            ));
 }
 

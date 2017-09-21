@@ -1,16 +1,17 @@
 <?php
 require_once 'class.Autoloader.php';
 
-class CPanel  {
+class CPanel{
     
     protected $cpanel;
-	protected $ftp;
-	protected $api;
+    protected $ftp;
+    protected $api;
 
-	public function __construct(array $params)
-	{
-		$this->cpanel = new CPanelAcc($params);
-	}
+
+    public function __construct(CPanelAcc $CPanelAcc)
+    {
+        $this->cpanel = $CPanelAcc;
+    }
 
     public function create($user,$domain)
     {
@@ -44,31 +45,31 @@ class CPanel  {
 
     public function createFTP(array $params,$user,$pass,$quota)
     {
-    	$this->loadFtpInstance($params);
+    	$this->loadFtpInstance(new CPanelFtp($params));
     	return $this->ftp->create($params['username'],$user,$pass,$quota);
     }
 
     public function deleteFTP(array $params,$user)
     {
-    	$this->loadFtpInstance($params);
+    	$this->loadFtpInstance(new CPanelFtp($params));
     	return $this->ftp->delete($user);
     }
 
     public function changeQuotaFTP(array $params,$user,$quota)
     {
-    	$this->loadFtpInstance($params);
+    	$this->loadFtpInstance(new CPanelFtp($params));
     	return $this->ftp->changeQuota($user,$quota);
     }
 
-    public function listAccountsFTP($params)
+    public function listAccountsFTP(array $params)
     {
-    	$this->loadFtpInstance($params);
+    	$this->loadFtpInstance(new CPanelFtp($params));
     	return $this->ftp->listAccounts($params['username']);
     }
 
-    public function loadFtpInstance($params)
+    public function loadFtpInstance(CPanelFtp $CPanelFtp)
     {
-        $this->ftp = new CPanelFtp($params);
-	}
+        $this->ftp = $CPanelFtp;
+    }
 
 }

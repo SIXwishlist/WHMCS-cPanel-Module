@@ -1,6 +1,7 @@
 <?php
+require_once 'class.CPanelApi.php';
 
-class CPanelConnection {
+class CPanelConnection extends CPanelApi{
     
     protected $username;
     protected $password;
@@ -69,7 +70,8 @@ class CPanelConnection {
    {
       if(!$curl)
       {
-        throw new Exception(curl_error($curl));
+        $this->curlError = curl_error($curl);
+        throw new Exception($this->curlError);
       }
    }
 
@@ -78,7 +80,8 @@ class CPanelConnection {
       $code = curl_getinfo($curl,CURLINFO_HTTP_CODE);
       if($code != '200')
       {
-        throw new Exception('Error occured!'); 
+        $this->httpCode = $code;
+        throw new Exception('Error occured!Code: ' . $this->httpCode); 
       }
    }
    
@@ -87,7 +90,7 @@ class CPanelConnection {
       json_decode($json);
        if(json_last_error() != 0)
        {
-           throw new Exception('Error occured!: '. json_last_error_msg());
+           throw new Exception('Error occured!: ' . json_last_error_msg());
        }     
    }
    
