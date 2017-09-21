@@ -1,6 +1,4 @@
 <?php
-namespace Test;
-
 require_once 'JsonSerializer.php';
 
 class Model extends JsonSerializer{

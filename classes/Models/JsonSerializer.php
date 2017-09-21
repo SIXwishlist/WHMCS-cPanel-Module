@@ -1,7 +1,7 @@
 <?php
-namespace Test;
+require_once 'FtpValidator.php';
 
-class JsonSerializer implements \JsonSerializable {
+class JsonSerializer extends FtpValidator implements \JsonSerializable {
 
     public function jsonSerialize() {
         $out = [];

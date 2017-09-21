@@ -10,8 +10,8 @@ function autoloader($path)
         include 'Models' . DS . $class . '.php';
         return;
     }
-            
-    include $class . '.php';
+
+    include 'class.' . $class . '.php';
 }
 
 spl_autoload_register('autoloader');

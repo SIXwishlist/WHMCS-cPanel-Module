@@ -1,7 +1,7 @@
 <?php
 define('DS', DIRECTORY_SEPARATOR);
 
-require_once dirname(__FILE__) . DS . 'classes' . DS . 'autoloader.php';
+require_once dirname(__FILE__) . DS . 'classes' . DS . 'class.Autoloader.php';
 
 use WHMCS\Database\Capsule as DB;
 
@@ -23,20 +23,17 @@ function MichalZa_ConfigOptions()
 function MichalZa_CreateAccount(array $params)
 {
 if(!$params['domain'])
-    throw new \Exception('You need to fill domain input first!');  
+{
+    throw new Exception('You need to fill domain input first!');  
+}
 
-$args = array(
-		'api.version' => 1,
-		'user'        => $params['username'],
-		'domain'	  => $params['domain']
-			);
 try
 { 
-   $a = new \Test\Api($params);
-   $a->create($args);
+    $cpanel = new CPanel($params);
+    $cpanel->create($params['username'],$params['domain']);
 }
 catch(Exception $e)
-{
+{	
 	return $e->getMessage();
 }
 
@@ -47,13 +44,8 @@ function MichalZa_SuspendAccount(array $params)
 {  
     try
     {  
-        $args = array(
-		'api.version' => 1,
-		'user'        => $params['username']
-		);
-   
-        $a = new \Test\Api($params);
-        $a->suspend($args);
+        $cpanel = new CPanel($params);
+        $cpanel->suspend($params['username']);
     }
     catch(Exception $e)
     {
@@ -67,13 +59,8 @@ function MichalZa_UnsuspendAccount(array $params)
 {
     try
     {	
-        $args = array(
-		'api.version' => 1,
-		'user'        => $params['username']
-		);
-   
-        $a = new \Test\Api($params);
-        $a->unsuspend($args);
+        $cpanel = new CPanel($params);
+        $cpanel->unsuspend($params['username']);
     }
     catch(Exception $e)
     {
@@ -86,14 +73,8 @@ function MichalZa_TerminateAccount(array $params)
 {
     try
     {
-        $args = array(
-		'api.version' => 1,
-		'user'        => $params['username']
-		);
-   
-        $a = new \Test\Api($params);
-        $a->terminate($args);
-   
+        $cpanel = new CPanel($params);
+        $cpanel->terminate($params['username']); 
     }
     catch(Exception $e)
     {
@@ -106,13 +87,8 @@ function MichalZa_ChangePassword(array $params)
 {
     try 
     {
-    	$args = array(
-		'api.version' => 1,
-		'user'        => $params['username'],
-		'password'    => $params['password']
-		);
-	$a = new \Test\Api($params);
-	$a->changePassword($args);
+        $cpanel = new CPanel($params);
+        $cpanel->changePassword($params['username'],$params['password']); 
     }
     catch (Exception $e)
     {      
@@ -125,8 +101,8 @@ function MichalZa_TestConnection(array $params)
 {
     try
     {	
-    	$a = new \Test\Api($params);
-		$a->testConnection($args); 
+        $cpanel = new CPanel($params);
+        $cpanel->testConnection(); 
     }
     catch(Exception $e)
     {
@@ -182,7 +158,7 @@ function MichalZa_AdminServicesTabFieldsSave($params)
             DB::table('customtable')->where('serviceid' , $params['serviceid'])->update($data);	
 	}
 }
-
+ 
 function MichalZa_ClientAreaCustomButtonArray() 
 {	
     return array("Manage FTP" => "ftp");
@@ -207,9 +183,8 @@ function MichalZa_ClientArea($params)
     {
         try
 	{
-            $api = new \Test\Api($params);
-            $api->loadFtpInstance($params);
-            $api->ftp->delete($_GET['user']);
+			$cpanel = new CPanel($params);
+			$cpanel->deleteFTP($params,$_GET['user']);
             return 'success';
         }
         catch (Exception $e) 
@@ -223,9 +198,8 @@ function MichalZa_ClientArea($params)
     {
 	try
 	{
-            $a = new \Test\Api($params);
-            $a->loadFtpInstance($params);
-            $a->ftp->create($_POST['user'],$_POST['pass'],$_POST['quota']);
+            $cpanel = new CPanel($params);
+            $cpanel->createFTP($params,$_POST['user'],$_POST['pass'],$_POST['quota']);
             echo json_encode(array('msg' => 'success'));
             die();
         }
@@ -247,8 +221,7 @@ function MichalZa_ClientArea($params)
         }
         catch (Exception $e)
         {
-           // echo json_encode(array('error' => $e->getMessage()));
-            echo json_encode(array('msg' => 'success'));
+           	echo json_encode(array('error' => $e->getMessage()));
             die();
         }
     }
@@ -257,9 +230,8 @@ function MichalZa_ClientArea($params)
     {
         try
         {
-            $a = new \Test\Api($params);
-            $a->loadFtpInstance($params);
-            $result = $a->ftp->listAccounts();
+            $cpanel = new CPanel($params);
+            $result = $cpanel->listAccountsFTP($params);
             $data = $result->cpanelresult->data;
             echo json_encode($data);
             die();
@@ -275,7 +247,7 @@ function MichalZa_ClientArea($params)
 function MichalZa_ftp($params)
 {  
     
-    return array(   'templatefile' => 'templates/ManageFtp',
+    return array(   'templatefile' => 'Templates/ManageFtp',
                     'vars' => array(
                     'serviceid' => $params['serviceid'],
                     'cusername' => $params['username']));

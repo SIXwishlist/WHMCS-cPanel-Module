@@ -1,5 +1,4 @@
 <?php
-namespace Test;
 
 require_once 'Model.php';
 
@@ -26,18 +25,21 @@ class CreateFtpModel extends Model{
     
     public function setUser($user)
     {
+        $this->validUser($user);
         $this->user = $user;
         return $this;
     }
 
     public function setPass($pass) 
     {
+        $this->validPassword($pass);
         $this->pass = $pass;
         return $this;
     }
 
     public function setQuota($quota) 
     {
+        $this->validQuota($quota);
         $this->quota = $quota;
         return $this;
     }

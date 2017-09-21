@@ -119,6 +119,6 @@ jQuery('#adddiv').hide();
 var serviceid = {$serviceid},
 cuser = '{$cusername}';
 </script>
-<SCRIPT type="text/javascript" SRC="modules/servers/MichalZa/templates/manage.js">
+<SCRIPT type="text/javascript" SRC="modules/servers/MichalZa/Templates/manage.js">
 </SCRIPT>
 

@@ -1,7 +1,6 @@
 var open = false;
 jQuery(function(){
 jQuery('#refresh').click();
-});
 jQuery('#aaa').click(function(){
 if(open == false){
     jQuery('#adddiv').show();
@@ -103,6 +102,22 @@ jQuery.get("clientarea.php?action=productdetails&id="+serviceid+"&modop=custom&a
         });
 });
 
+function deleteF(id)
+{
+    var user = jQuery('#del'+id).val();
+    var serviceid = jQuery('#serviceid').val();
+    var url = jQuery('#addftpacc').attr('action');
+    var sender = jQuery('#del' + id);
+    var parents =  jQuery(sender).parent().parent();
+    jQuery(sender).parent().parent().html('<td colspan="5" style="text-align:center ; color:red">Deleted</td>');
+    jQuery.get(url+"&id="+serviceid+"&user="+user+"&method=delete")
+            .done(function(){
+                jQuery(parents).remove();
+                jQuery('#refresh').click();
+                
+    });    
+}
+
 jQuery('#refresh').click(function(){
     jQuery('#refresh').hide();
     jQuery('#ca_table').hide();
@@ -114,7 +129,7 @@ jQuery('#refresh').click(function(){
             {
                 jQuery('.loader').hide();
                 jQuery('#aaa').hide();
-                jQuery('#errordiv').html('You need to create an cPanel account first!').show(); 
+                jQuery('#errordiv').html('You need to create a cPanel account first!').show(); 
             }
             else if(result.error)
             {
@@ -144,7 +159,7 @@ jQuery('#refresh').click(function(){
             	{
             		return true;
             	}
-                var delButton = "<button type='button' class='btn btn-danger' onclick='deleteFtp("+id+")' id='del"+id+"' value="+value.serverlogin+"><span class='glyphicon glyphicon-trash' style='color:white'></span></button>";
+                var delButton = "<button type='button' class='btn btn-danger' onclick='deleteF("+id+")' id='del"+id+"' value="+value.serverlogin+"><span class='glyphicon glyphicon-trash' style='color:white'></span></button>";
                 var editButton = "<button type='button'  class='btn btn-warning' onclick='changeEdit("+id+")' id='edit"+id+"' value="+value.q+" data-user="+value.serverlogin+" data-toggle='modal' data-target='#editModal'><span class='glyphicon glyphicon-pencil' style='color:white'></span></button>";
                 jQuery('tbody').append('<tr><td>'+id+'<td>'+value.serverlogin+'</td><td>'+value.dir+'</td><td>'+value.diskquota+'</td><td>'+delButton+''+editButton+'</td></tr>');
                 id = id + 1;
@@ -158,19 +173,7 @@ jQuery('#refresh').click(function(){
                     }});
 });
    
-function deleteFtp(id)
-{
-    var user = jQuery('#del'+id).val();
-    var serviceid = jQuery('#serviceid').val();
-    var url = jQuery('#addftpacc').attr('action');
-    var sender = jQuery('#del' + id);
-    var parents =  jQuery(sender).parent().parent();
-    jQuery(sender).parent().parent().html('<td colspan="5" style="text-align:center ; color:red">Deleted</td>');
-    jQuery.get(url+"&id="+serviceid+"&user="+user+"&method=delete")
-            .done(function(){
-                jQuery(parents).remove();
-                jQuery('#refresh').click();
-                
-    });    
-}
+
+});
+
 
