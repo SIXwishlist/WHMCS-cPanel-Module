@@ -1,6 +1,5 @@
 <?php
-
-require_once 'Model.php';
+require_once dirname(__DIR__) . '/Model.php';
 
 class CreateFtpModel extends Model{
     
@@ -8,20 +7,10 @@ class CreateFtpModel extends Model{
     protected $pass;
     protected $quota;
     protected $serializable = [
-        'cpanel_jsonapi_user',
-        'cpanel_jsonapi_module',
-        'cpanel_jsonapi_func',
         'user',
         'pass',
         'quota'
     ];
-
-    public function __construct($username)
-    {
-        $this->cpanel_jsonapi_user = $username;
-        $this->cpanel_jsonapi_module = 'Ftp';
-        $this->cpanel_jsonapi_func = 'addftp';
-    }
     
     public function setUser($user)
     {

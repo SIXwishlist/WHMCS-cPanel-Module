@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Model.php';
+require_once dirname(__DIR__) . '/Model.php';
 
 class ListFtpModel extends Model{
     

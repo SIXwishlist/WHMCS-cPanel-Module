@@ -33,7 +33,6 @@ if(!$params['domain'])
 try
 { 
     $cpanel = new CPanel(new CPanelAcc($params));
-    //$cpanel->create($params['username'],$params['domain']);
     $cpanel->create($params['username'],$params['domain']);
 }
 catch(Exception $e)
@@ -190,10 +189,12 @@ function MichalZa_ClientArea($params)
     if($_GET['method'] == 'delete')
     {
         try
-	{
+	   {
             $cpanel = new CPanel(new CPanelAcc($params));
             $cpanel->deleteFTP($params,$_GET['user']);
-            return 'success';
+            echo json_encode(array(
+                'msg' => 'success'
+                ));
         }
         catch (Exception $e) 
         {
@@ -206,8 +207,8 @@ function MichalZa_ClientArea($params)
     }
     if($_GET['method'] == 'create')
     {
-	try
-	{
+	   try
+	   {
             $cpanel = new CPanel(new CPanelAcc($params));
             $cpanel->createFTP($params,$_POST['user'],$_POST['pass'],$_POST['quota']);
             echo json_encode(array(
@@ -228,7 +229,7 @@ function MichalZa_ClientArea($params)
         try
         {
             $cpanel = new CPanel(new CPanelAcc($params));
-            $cpanel->ftp->changeQuotaFTP($params,$_GET['user'] , $_GET['quota']);
+            $cpanel->changeQuotaFTP($params,$_GET['user'] , $_GET['quota']);
             echo json_encode(array(
                 'msg' => 'success')
                     );

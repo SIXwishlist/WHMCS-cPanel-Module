@@ -5,8 +5,6 @@ class CPanel{
     
     protected $cpanel;
     protected $ftp;
-    protected $api;
-
 
     public function __construct(CPanelAcc $CPanelAcc)
     {
@@ -45,31 +43,28 @@ class CPanel{
 
     public function createFTP(array $params,$user,$pass,$quota)
     {
-    	$this->loadFtpInstance(new CPanelFtp($params));
-    	return $this->ftp->create($params['username'],$user,$pass,$quota);
+    	$this->loadFtpInstance(new CPanelFtp($params))->ftp->create($user,$pass,$quota);
     }
 
     public function deleteFTP(array $params,$user)
     {
-    	$this->loadFtpInstance(new CPanelFtp($params));
-    	return $this->ftp->delete($user);
+    	$this->loadFtpInstance(new CPanelFtp($params))->ftp->delete($user);
     }
 
     public function changeQuotaFTP(array $params,$user,$quota)
     {
-    	$this->loadFtpInstance(new CPanelFtp($params));
-    	return $this->ftp->changeQuota($user,$quota);
+    	$this->loadFtpInstance(new CPanelFtp($params))->ftp->changeQuota($user,$quota);
     }
 
     public function listAccountsFTP(array $params)
     {
-    	$this->loadFtpInstance(new CPanelFtp($params));
-    	return $this->ftp->listAccounts($params['username']);
+    	return $this->loadFtpInstance(new CPanelFtp($params))->ftp->listAccounts();
     }
 
     public function loadFtpInstance(CPanelFtp $CPanelFtp)
     {
         $this->ftp = $CPanelFtp;
+        return $this;
     }
 
 }

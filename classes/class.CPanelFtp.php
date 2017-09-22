@@ -3,49 +3,55 @@ require_once 'class.CPanelConnection.php';
 require_once 'class.Autoloader.php';
 
 class CPanelFtp extends CPanelConnection{
+/**
+*** API's = ( 'WHM1', 'API1', 'API2', 'UAPI');
+**/
+    protected $cpanelModule = 'Ftp';
+    protected $cpanelFunc;
+    protected $cpanelUser;
     
 	public function __construct($params)
     {
         parent::__construct($params);
+        $this->cpanelUser = $params['username'];
     }
-    public function create($cpanelUser,$user,$pass,$quota)
+    public function create($user,$pass,$quota)
     {
-        $ftp = new CreateFtpModel($cpanelUser);
+        $ftp = new CreateFtpModel();
         $ftp->setUser($user)
             ->setPass($pass)
             ->setQuota($quota);
-        $data = json_decode(json_encode($ftp));
-        $restURL = $this->buildUrl('cpanel',$data);
-        $this->setUrl($restURL)->execute();   
+        $this->data = $this->toArray($ftp);
+        $this->cpanelFunc = 'addftp';
+        return $this->requestAPI('API2');
     }
 	
     public function delete($user)
     {
-        $ftp = new DeleteFtpModel($this->user);
+        $ftp = new DeleteFtpModel();
         $ftp->setUser($user)
             ->setDestroy(1);
-        $data = json_decode(json_encode($ftp));
-        $restURL = $this->buildUrl('cpanel',$data);
-        $this->setUrl($restURL)->execute(); 
+        $this->data = $this->toArray($ftp);
+        $this->cpanelFunc = 'delftp';
+        return $this->requestAPI('API2');
     }
         
-    public function listAccounts($user)
+    public function listAccounts()
     {  
-        $ftp = new ListFtpModel($user);
-        $data = json_decode(json_encode($ftp));
-        $restURL = $this->buildUrl('cpanel',$data);
-        $result = $this->setUrl($restURL)->execute();       
-        return $result;
+        $ftp = new ListFtpModel();
+        $this->data =  $this->toArray($ftp);
+        $this->cpanelFunc = 'listftpwithdisk';
+        return $this->requestAPI('API2');
     }
         
     public function changeQuota($user,$quota)
     {
-        $ftp = new UpdateFtpModel($this->user);
+        $ftp = new UpdateFtpModel();
         $ftp->setUser($user)
             ->setQuota($quota);
-        $data = json_decode(json_encode($ftp));
-        $restURL = $this->buildUrl('cpanel',$data);
-        $this->setUrl($restURL)->execute();
+        $this->data = $this->toArray($ftp);
+        $this->cpanelFunc = 'setquota';
+        return $this->requestAPI('API2');
     }
     
 }

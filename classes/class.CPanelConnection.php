@@ -8,8 +8,8 @@ class CPanelConnection extends CPanelApi{
     protected $url;
     protected $curl;
     
-    protected $curlError = null;
-    protected $httpCode = null;
+    protected $curlError;
+    protected $httpCode;
      
     public function __construct($params)
     {
@@ -24,19 +24,29 @@ class CPanelConnection extends CPanelApi{
         return $params['serverhttpprefix'] . '://' . (isset($params['serverip']) ? $params['serverip'] : $params['serverhostname']) . ':2087';
     }
     
-    public function buildURL($url,$data = null)
+    public function buildURL($url,$data = null,$version = null)
     {
         if(is_object($data))
         {
             $data = $this->getVars($data);
         }
         
-        return $url . (empty($data) ? '' : '?' . http_build_query($data));
+        return $url . (empty($data) ? '' : '?'. (isset($version) ? 'api.version=' . $version . '&' : '') . http_build_query($data));
     }
     
     public function getVars($object)
     {
         return get_object_vars($object);
+    }
+
+    public function toArray($json)
+    {
+        return json_decode(json_encode($json));
+    }
+
+    public function mergeArrays($array1,$array2)
+    {
+      return array_merge($array1,$array2);
     }
     
     public function prepare()
@@ -52,26 +62,24 @@ class CPanelConnection extends CPanelApi{
 
     public function setUrl($action)
     {
-       curl_setopt($this->curl, CURLOPT_URL, $this->url . "/json-api/" . $action);
+       curl_setopt($this->curl, CURLOPT_URL, $this->url . $action);
        return $this;
     }
     
    public function execute()
    {
        $response = curl_exec($this->curl);
-       self::checkCurl($this->curl);
+       self::checkCurl($response,$this->curl);
        self::checkCode($this->curl);
        self::checkJson($response);
-
        return self::checkCPanelError($this->parse($response));
    }
    
-   public static function checkCurl($curl)
+   public static function checkCurl($response,$curl)
    {
-      if(!$curl)
+      if(!$response)
       {
-        $this->curlError = curl_error($curl);
-        throw new Exception($this->curlError);
+        throw new Exception(curl_error($curl));
       }
    }
 
@@ -80,8 +88,7 @@ class CPanelConnection extends CPanelApi{
       $code = curl_getinfo($curl,CURLINFO_HTTP_CODE);
       if($code != '200')
       {
-        $this->httpCode = $code;
-        throw new Exception('Error occured!Code: ' . $this->httpCode); 
+        throw new Exception('Error occured!: '.$code); 
       }
    }
    
@@ -107,6 +114,10 @@ class CPanelConnection extends CPanelApi{
       if(isset($response->cpanelresult->error) && $response->cpanelresult->result == 0)
       { 	
           throw new Exception($response->cpanelresult->data->reason);
+      }
+      if($response->result[0]->status == 0 && isset($response->result[0]->statusmsg))
+      {
+        throw new Exception($response->result[0]->statusmsg);
       }
 
       
