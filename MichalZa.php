@@ -44,7 +44,12 @@ return 'success';
 }
 
 function MichalZa_SuspendAccount(array $params)
-{  
+{
+    if(!$params['username'])
+    {
+        throw new Exception('You need to fill username input first!');  
+    }
+    
     try
     {  
         $cpanel = new CPanel(new CPanelAcc($params));
@@ -60,6 +65,11 @@ function MichalZa_SuspendAccount(array $params)
 
 function MichalZa_UnsuspendAccount(array $params)
 {
+    if(!$params['username'])
+    {
+        throw new Exception('You need to fill username input first!');  
+    }
+    
     try
     {	
         $cpanel = new CPanel(new CPanelAcc($params));
@@ -74,6 +84,11 @@ function MichalZa_UnsuspendAccount(array $params)
 
 function MichalZa_TerminateAccount(array $params)
 {
+    if(!$params['username'])
+    {
+        throw new Exception('You need to fill username input first!');  
+    }
+    
     try
     {
         $cpanel = new CPanel(new CPanelAcc($params));
@@ -88,6 +103,11 @@ function MichalZa_TerminateAccount(array $params)
 
 function MichalZa_ChangePassword(array $params)
 {
+    if(!$params['username'])
+    {
+        throw new Exception('You need to fill username input first!');  
+    }
+    
     try 
     {
         $cpanel = new CPanel(new CPanelAcc($params));
@@ -109,13 +129,13 @@ function MichalZa_TestConnection(array $params)
     }
     catch(Exception $e)
     {
-		return array(
-                    'error' => $e->getMessage()
-                        );
+	return array(
+            'error' => $e->getMessage()
+            );
     }
-		return array(
-                    'success' => true
-                        );  
+	return array(
+            'success' => true
+             );  
 }
 
 function MichalZa_AdminServicesTabFields($params) 
@@ -142,6 +162,7 @@ function MichalZa_AdminServicesTabFieldsSave($params)
 {
 		
     $result = DB::table('customtable')->select('var1','var2','var3','var4')->where('serviceid' , $params['serviceid'])->first();
+    
     if(!$result)
     {	
         $new = array(
@@ -168,7 +189,9 @@ function MichalZa_AdminServicesTabFieldsSave($params)
  
 function MichalZa_ClientAreaCustomButtonArray() 
 {	
-    return array("Manage FTP" => "ftp");
+    return array(
+        "Manage FTP" => "ftp"
+        );
 }
 
 function MichalZa_ClientArea($params)
@@ -189,30 +212,32 @@ function MichalZa_ClientArea($params)
     if($_GET['method'] == 'delete')
     {
         try
-	   {
+	{
             $cpanel = new CPanel(new CPanelAcc($params));
             $cpanel->deleteFTP($params,$_GET['user']);
             echo json_encode(array(
-                'msg' => 'success'
+                'msgSuccess' => 'Ftp account has been deleted successfully!'
                 ));
+            die();
         }
         catch (Exception $e) 
         {
             echo json_encode(array(
                 'error' => $e->getMessage()
-                    ));
+                ));
             die();
         }
 
     }
     if($_GET['method'] == 'create')
     {
+        $data = json_decode(file_get_contents("php://input"));
 	   try
 	   {
-            $cpanel = new CPanel(new CPanelAcc($params));
-            $cpanel->createFTP($params,$_POST['user'],$_POST['pass'],$_POST['quota']);
-            echo json_encode(array(
-                'msg' => 'success'
+                $cpanel = new CPanel(new CPanelAcc($params));
+                $cpanel->createFTP($params,$data->login,$data->password,$data->quota);
+                echo json_encode(array(
+                    'msgSuccess' => 'Ftp account has been created successfully!'
                 ));
             die();
         }
@@ -230,9 +255,9 @@ function MichalZa_ClientArea($params)
         {
             $cpanel = new CPanel(new CPanelAcc($params));
             $cpanel->changeQuotaFTP($params,$_GET['user'] , $_GET['quota']);
-            echo json_encode(array(
-                'msg' => 'success')
-                    );
+                echo json_encode(array(
+                    'msgSuccess' => 'Ftp account has been updated successfully!'
+                ));
             die();
         }
         catch (Exception $e)

@@ -43,17 +43,17 @@ class CPanel{
 
     public function createFTP(array $params,$user,$pass,$quota)
     {
-    	$this->loadFtpInstance(new CPanelFtp($params))->ftp->create($user,$pass,$quota);
+    	return $this->loadFtpInstance(new CPanelFtp($params))->ftp->create($user,$pass,$quota);
     }
 
     public function deleteFTP(array $params,$user)
     {
-    	$this->loadFtpInstance(new CPanelFtp($params))->ftp->delete($user);
+    	return $this->loadFtpInstance(new CPanelFtp($params))->ftp->delete($user);
     }
 
     public function changeQuotaFTP(array $params,$user,$quota)
     {
-    	$this->loadFtpInstance(new CPanelFtp($params))->ftp->changeQuota($user,$quota);
+    	return $this->loadFtpInstance(new CPanelFtp($params))->ftp->changeQuota($user,$quota);
     }
 
     public function listAccountsFTP(array $params)

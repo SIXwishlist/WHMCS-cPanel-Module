@@ -29,13 +29,16 @@ class CPanelConnection extends CPanelApi{
         if(is_object($data))
         {
             $data = $this->getVars($data);
-        }
-        
+        } 
         return $url . (empty($data) ? '' : '?'. (isset($version) ? 'api.version=' . $version . '&' : '') . http_build_query($data));
     }
     
     public function getVars($object)
     {
+        if(!is_object($object))
+        {
+            return $object;
+        }
         return get_object_vars($object);
     }
 
@@ -103,7 +106,7 @@ class CPanelConnection extends CPanelApi{
    
    public static function checkCPanelError($response)
    {
-   	  if(isset($response->metadata->result) && $response->metadata->result == 0)
+        if(isset($response->metadata->result) && $response->metadata->result == 0)
       {	
           throw new Exception($response->metadata->reason);	  
       }
@@ -119,7 +122,6 @@ class CPanelConnection extends CPanelApi{
       {
         throw new Exception($response->result[0]->statusmsg);
       }
-
       
       return $response;
    }

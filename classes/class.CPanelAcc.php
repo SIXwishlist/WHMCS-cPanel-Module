@@ -20,7 +20,7 @@ class CPanelAcc extends CPanelConnection implements CPanelInterface{
     {
     	$create = new CreateCPanelModel();
     	$create->setUser($user)
-    		   ->setDomain($domain);
+    		->setDomain($domain);
     	$this->data = $this->toArray($create);	  
         $this->function = 'createacct';
         return $this->requestAPI('WHM1');

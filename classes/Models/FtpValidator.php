@@ -6,7 +6,7 @@ class FtpValidator{
     {
         if(!strlen($input))
         {
-            throw new \Exception ('All inputs are required!');
+            throw new \Exception ('All inputs are required!(Login empty)');
         }
         $pattern = "/[\/~!@#\$%\^&*()+={}[\]|;:'\<>,.\?]/";
         if(preg_match($pattern, $input))
@@ -20,7 +20,7 @@ class FtpValidator{
     {
         if(!strlen($input))
         {
-            throw new \Exception('All inputs are required!');
+            throw new \Exception('All inputs are required!(Password empty)');
         }
         return trim($input);   
     }
